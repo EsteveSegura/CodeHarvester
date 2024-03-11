@@ -1,2 +1,75 @@
 # CodeHarvester
-Seamlessly aggregate code and text, readying data for AI insights
+
+CodeHarvester efficiently aggregates code and text from files for streamlined AI analysis, simplifying data compilation and preparation.
+
+## Clone the Repository
+
+To begin, clone the repository to your local machine:
+
+```bash
+git clone https://github.com/EsteveSegura/CodeHarvester.git
+cd CodeHarvester
+```
+
+## Installation
+
+Install the necessary dependencies to ensure CodeHarvester runs smoothly:
+
+```bash
+pip3 install -r requirements.txt
+```
+
+## Build the Binary
+
+Compile the application into a binary for easy execution:
+
+```bash
+python3 setup.py
+pyinstaller --onefile ./src/main.py
+# Find the binary in the /dist directory
+```
+
+## Usage
+
+To use CodeHarvester, navigate to the CodeHarvester directory and execute the following command:
+
+```bash
+python3 src/main.py <ROOT_DIRECTORY> --extensions <FILE_EXTENSIONS> --exclude-dirs <DIRECTORIES_TO_EXCLUDE> --exclude-files <FILES_TO_EXCLUDE>
+```
+
+### Parameters
+
+- **<ROOT_DIRECTORY>**: The starting point for the directory traversal.
+- **--extensions**: Specify file extensions to include in the aggregation (e.g., py, js, txt).
+- **--exclude-dirs**: List directories you wish to exclude from the traversal.
+- **--exclude-files**: Specify individual files to be omitted from the aggregation.
+
+## Examples
+
+### Basic Usage
+
+To aggregate Python and JavaScript files:
+
+```bash
+python3 src/main.py /path/to/your/directory --extensions py js
+```
+
+### Excluding Directories and Files
+
+To exclude specific directories and files:
+
+```bash
+python3 src/main.py /path/to/your/directory --extensions py js --exclude-dirs node_modules .git --exclude-files example.py
+```
+
+By following these steps, you can efficiently compile and review large sets of files, making CodeHarvester an indispensable tool for data preparation and analysis.
+
+Feel free to adjust the paths, URLs, and any specific details to better match your project's requirements.
+
+## Test
+
+To run test just type:
+
+```bash
+python3 ./test/find_files_test.py
+```
