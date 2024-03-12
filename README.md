@@ -19,16 +19,6 @@ Install the necessary dependencies to ensure CodeHarvester runs smoothly:
 pip3 install -r requirements.txt
 ```
 
-## Build the Binary
-
-Compile the application into a binary for easy execution:
-
-```bash
-python3 setup.py
-pyinstaller --onefile ./src/main.py
-# Find the binary in the /dist directory
-```
-
 ## Usage
 
 To use CodeHarvester, navigate to the CodeHarvester directory and execute the following command:
@@ -45,7 +35,7 @@ python3 src/main.py <ROOT_DIRECTORY> --extensions <FILE_EXTENSIONS> --exclude-di
 - **--exclude-files**: Specify individual files to be omitted from the aggregation.
 - **--output**: Specify output file path
 
-## Examples
+## Examples Of Usage
 
 ### Basic Usage
 
@@ -66,6 +56,40 @@ python3 src/main.py /path/to/your/directory --extensions py js --exclude-dirs no
 By following these steps, you can efficiently compile and review large sets of files, making CodeHarvester an indispensable tool for data preparation and analysis.
 
 Feel free to adjust the paths, URLs, and any specific details to better match your project's requirements.
+
+## Example Of Output
+
+Running the command: 
+
+```bash
+ python3 src/main.py /home/root/code/tmp/is-emoji --extensions js yml --exclude-dirs .git
+ ```
+
+ The output consists of all files present in the root folder "is-emoji", except for the .git folder and including all files with .js .yml extension.
+
+<div id="image-theme">
+  <img src="./assets/example_output_dark.png" id="dark" />
+  <img src="./assets/example_output_light.png" id="light" />
+</div>
+
+<style>
+  @media (prefers-color-scheme: dark) {
+    #image-theme img#dark { display: none; }
+  }
+  @media (prefers-color-scheme: light) {
+    #image-theme img#light { display: none; }
+  }
+</style>
+
+## Build the Binary
+
+Compile the application into a binary for easy execution:
+
+```bash
+python3 setup.py
+pyinstaller --onefile ./src/main.py
+# Find the binary in the /dist directory
+```
 
 ## Test
 
