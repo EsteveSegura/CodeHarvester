@@ -67,19 +67,7 @@ Running the command:
 
  The output consists of all files present in the root folder "is-emoji", except for the .git folder and including all files with .js .yml extension.
 
-<div id="image-theme">
-  <img src="./assets/example_output_dark.png" id="dark" />
-  <img src="./assets/example_output_light.png" id="light" />
-</div>
-
-<style>
-  @media (prefers-color-scheme: dark) {
-    #image-theme img#dark { display: none; }
-  }
-  @media (prefers-color-scheme: light) {
-    #image-theme img#light { display: none; }
-  }
-</style>
+![Alt Text](./assets/example_output_dark.png)
 
 ## Build the Binary
 
