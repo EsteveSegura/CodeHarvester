@@ -73,3 +73,21 @@ To run test just type:
 ```bash
 python3 ./test/find_files_test.py
 ```
+
+## Alternatives
+
+You can run some commands in your terminal, its not a full alternative but it works:
+
+Agreggate files:
+
+```bash
+# find <FOLDER_ROO> -name <EXTENSION> -print0 | xargs -0 cat > <FILE OUTPUT>
+find /path/to/www -name '*.html' -print0 | xargs -0 cat > combined_prompt.txt
+```
+
+Get the tree:
+
+```bash
+# tree folder
+tree /path/to/www
+```
