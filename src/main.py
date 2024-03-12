@@ -24,6 +24,7 @@ def find_files(directory, extensions, exclude_dirs, exclude_files):
     return matches
 
 def print_tree(directory, prefix='', exclude_dirs=[], exclude_files=[]):
+    tree_output = ""
     elements = os.listdir(directory)
     elements.sort(key=lambda x: (not os.path.isdir(os.path.join(directory, x)), x.lower()))
     filtered_elements = [e for e in elements if not is_excluded(os.path.join(directory, e), directory, exclude_dirs, exclude_files)]
@@ -32,11 +33,13 @@ def print_tree(directory, prefix='', exclude_dirs=[], exclude_files=[]):
         full_path = os.path.join(directory, element)
         is_last = index == len(filtered_elements) - 1
         prefix_element = '└── ' if is_last else '├── '
-        print(prefix + prefix_element + element)
+        tree_output += prefix + prefix_element + element + '\n'
 
         if os.path.isdir(full_path):
             secondary_prefix = '    ' if is_last else '│   '
-            print_tree(full_path, prefix + secondary_prefix, exclude_dirs, exclude_files)
+            tree_output += print_tree(full_path, prefix + secondary_prefix, exclude_dirs, exclude_files)
+
+    return tree_output
 
 def generate_markdown(files):
     markdown_blocks = []
@@ -53,6 +56,7 @@ def main():
     parser.add_argument('--extensions', type=str, nargs='+', help='File extensions to include.', required=True)
     parser.add_argument('--exclude-dirs', type=str, nargs='*', default=[], help='Directories to exclude.')
     parser.add_argument('--exclude-files', type=str, nargs='*', default=[], help='Files to exclude.')
+    parser.add_argument('--output', type=str, help='Output file path and name.', default=f"code_{int(time.time())}.md")
 
     args = parser.parse_args()
 
@@ -61,15 +65,14 @@ def main():
 
     files = find_files(args.directory, args.extensions, exclude_dirs, exclude_files)
     markdown = generate_markdown(files)
+    tree = print_tree(args.directory, exclude_dirs=exclude_dirs, exclude_files=exclude_files)
 
-    print(markdown)
-    print_tree(args.directory, exclude_dirs=exclude_dirs, exclude_files=exclude_files)
+    output_content = markdown + '\n\n' + tree
 
-    current_timestamp = int(time.time())
-    filename = f"code_{current_timestamp}.md"
+    print(output_content)
 
-    with open(filename, 'w') as file:
-        file.write(markdown)
+    with open(args.output, 'w') as file:
+        file.write(output_content)
 
 if __name__ == "__main__":
     main()
