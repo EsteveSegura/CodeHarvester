@@ -43,6 +43,7 @@ python3 src/main.py <ROOT_DIRECTORY> --extensions <FILE_EXTENSIONS> --exclude-di
 - **--extensions**: Specify file extensions to include in the aggregation (e.g., py, js, txt).
 - **--exclude-dirs**: List directories you wish to exclude from the traversal.
 - **--exclude-files**: Specify individual files to be omitted from the aggregation.
+- **--output**: Specify output file path
 
 ## Examples
 
@@ -51,7 +52,7 @@ python3 src/main.py <ROOT_DIRECTORY> --extensions <FILE_EXTENSIONS> --exclude-di
 To aggregate Python and JavaScript files:
 
 ```bash
-python3 src/main.py /path/to/your/directory --extensions py js
+python3 src/main.py /path/to/your/directory --extensions py js --output ./output.txt
 ```
 
 ### Excluding Directories and Files
@@ -59,7 +60,7 @@ python3 src/main.py /path/to/your/directory --extensions py js
 To exclude specific directories and files:
 
 ```bash
-python3 src/main.py /path/to/your/directory --extensions py js --exclude-dirs node_modules .git --exclude-files example.py
+python3 src/main.py /path/to/your/directory --extensions py js --exclude-dirs node_modules .git --exclude-files example.py --output ./output.txt
 ```
 
 By following these steps, you can efficiently compile and review large sets of files, making CodeHarvester an indispensable tool for data preparation and analysis.
