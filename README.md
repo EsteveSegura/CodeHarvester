@@ -33,6 +33,7 @@ python3 src/main.py <ROOT_DIRECTORY> --extensions <FILE_EXTENSIONS> --exclude-di
 - **--extensions**: Specify file extensions to include in the aggregation (e.g., py, js, txt).
 - **--exclude-dirs**: List directories you wish to exclude from the traversal.
 - **--exclude-files**: Specify individual files to be omitted from the aggregation.
+- **--include-files**: Specify individual files to be aggregated (cannot be used with: --exclude-dirs, --exclude-files)
 - **--output**: Specify output file path
 
 ## Examples Of Usage
