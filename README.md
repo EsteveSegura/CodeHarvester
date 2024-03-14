@@ -16,12 +16,14 @@ cd CodeHarvester
 Install the necessary dependencies to ensure CodeHarvester runs smoothly:
 
 ```bash
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ## Usage
 
-To use CodeHarvester, navigate to the CodeHarvester directory and execute the following command:
+### Basic Command Line Usage
+
+To use CodeHarvester from the command line, navigate to the CodeHarvester directory and execute the following command:
 
 ```bash
 python3 src/main.py <ROOT_DIRECTORY> --extensions <FILE_EXTENSIONS> --exclude-dirs <DIRECTORIES_TO_EXCLUDE> --exclude-files <FILES_TO_EXCLUDE>
@@ -29,79 +31,53 @@ python3 src/main.py <ROOT_DIRECTORY> --extensions <FILE_EXTENSIONS> --exclude-di
 
 ### Parameters
 
-- **<ROOT_DIRECTORY>**: The starting point for the directory traversal.
-- **--extensions**: Specify file extensions to include in the aggregation (e.g., py, js, txt).
-- **--exclude-dirs**: List directories you wish to exclude from the traversal.
-- **--exclude-files**: Specify individual files to be omitted from the aggregation.
-- **--include-files**: Specify individual files to be aggregated (cannot be used with: --exclude-dirs, --exclude-files)
-- **--output**: Specify output file path
+- `<ROOT_DIRECTORY>`: The starting point for the directory traversal.
+- `--extensions`: Specify file extensions to include in the aggregation (e.g., py, js, txt).
+- `--exclude-dirs`: List directories you wish to exclude from the traversal.
+- `--exclude-files`: Specify individual files to be omitted from the aggregation.
+- `--include-files`: Specify individual files to be aggregated (cannot be used with --exclude-dirs, --exclude-files).
+- `--output`: Specify output file path and name. If not specified, the output will be printed to the console.
+- `--gui`: Launch a server to display the output in a web interface. Use `True` to enable this mode.
 
-## Examples Of Usage
+### Running in GUI Mode
 
-### Basic Usage
-
-To aggregate Python and JavaScript files:
+To run CodeHarvester in GUI mode, add the `--gui True` flag to the command:
 
 ```bash
-python3 src/main.py /path/to/your/directory --extensions py js --output ./output.txt
+python3 src/main.py <ROOT_DIRECTORY> --gui True
 ```
 
-### Excluding Directories and Files
+Navigate to `http://localhost:5043` in your web browser to interact with the application.
 
-To exclude specific directories and files:
+## Building the Binary
 
-```bash
-python3 src/main.py /path/to/your/directory --extensions py js --exclude-dirs node_modules .git --exclude-files example.py --output ./output.txt
-```
-
-By following these steps, you can efficiently compile and review large sets of files, making CodeHarvester an indispensable tool for data preparation and analysis.
-
-Feel free to adjust the paths, URLs, and any specific details to better match your project's requirements.
-
-## Example Of Output
-
-Running the command: 
+To compile CodeHarvester into a standalone binary for easy distribution, use PyInstaller:
 
 ```bash
- python3 src/main.py /home/root/code/tmp/is-emoji --extensions js yml --exclude-dirs .git
- ```
-
- The output consists of all files present in the root folder "is-emoji", except for the .git folder and including all files with .js .yml extension.
-
-![Alt Text](./assets/example_output_dark.png)
-
-## Build the Binary
-
-Compile the application into a binary for easy execution:
-
-```bash
-python3 setup.py
 pyinstaller --onefile ./src/main.py
-# Find the binary in the /dist directory
+# The binary will be located in the `dist` directory
 ```
 
-## Test
+## Running Tests
 
-To run test just type:
+To run the end-to-end tests, use:
 
 ```bash
-python3 ./test/find_files_test.py
+python3 test/e2e.py
 ```
 
 ## Alternatives
 
-You can run some commands in your terminal, its not a full alternative but it works:
+For quick tasks, you might use terminal commands like `find` and `tree`:
 
-Agreggate files:
+Aggregate files:
 
 ```bash
-# find <FOLDER_ROO> -name <EXTENSION> -print0 | xargs -0 cat > <FILE OUTPUT>
-find /path/to/www -name '*.html' -print0 | xargs -0 cat > combined_prompt.txt
+find /path/to/directory -name '*.py' -print0 | xargs -0 cat > combined_files.txt
 ```
 
-Get the tree:
+Generate a directory tree:
 
 ```bash
-# tree folder
-tree /path/to/www
+tree /path/to/directory
 ```
