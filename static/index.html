@@ -1,0 +1,411 @@
+<!--
+    (POC STAGE)
+    This code is a complet mess
+    Just for testing purposes 
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /*RESET*/
+        html,
+        body,
+        div,
+        span,
+        applet,
+        object,
+        iframe,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        blockquote,
+        pre,
+        a,
+        abbr,
+        acronym,
+        address,
+        big,
+        cite,
+        code,
+        del,
+        dfn,
+        em,
+        img,
+        ins,
+        kbd,
+        q,
+        s,
+        samp,
+        small,
+        strike,
+        strong,
+        sub,
+        sup,
+        tt,
+        var,
+        b,
+        u,
+        i,
+        center,
+        dl,
+        dt,
+        dd,
+        ol,
+        ul,
+        li,
+        fieldset,
+        form,
+        label,
+        legend,
+        table,
+        caption,
+        tbody,
+        tfoot,
+        thead,
+        tr,
+        th,
+        td,
+        article,
+        aside,
+        canvas,
+        details,
+        embed,
+        figure,
+        figcaption,
+        footer,
+        header,
+        hgroup,
+        menu,
+        nav,
+        output,
+        ruby,
+        section,
+        summary,
+        time,
+        mark,
+        audio,
+        video {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+        }
+
+        /* HTML5 display-role reset for older browsers */
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        hgroup,
+        menu,
+        nav,
+        section {
+            display: block;
+        }
+
+        body {
+            line-height: 1;
+        }
+
+        ol,
+        ul {
+            list-style: none;
+        }
+
+        blockquote,
+        q {
+            quotes: none;
+        }
+
+        blockquote:before,
+        blockquote:after,
+        q:before,
+        q:after {
+            content: '';
+            content: none;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        /*RESET*/
+        /* SCROLL */
+        ::-webkit-scrollbar {
+            width: 15px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #d6dee1;
+            border-radius: 20px;
+            border: 6px solid transparent;
+            background-clip: content-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #a8bbbf;
+        }
+
+        /* SCROLL */
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #282b30;
+            font-size: 18px;
+            font-weight: 400;
+            color: #cecece;
+            overflow: hidden;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        li::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 10px;
+            width: 10px;
+            border-left: 1px solid #000;
+            border-bottom: 1px solid #000;
+            border-bottom-left-radius: 4px;
+        }
+
+        li::after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 2px;
+            bottom: -8px;
+            width: 1px;
+            border-left: 1px solid #000;
+        }
+
+        li:last-child::after {
+            display: none;
+        }
+
+        .tree-checkbox {
+            margin-right: 5px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        #content {
+            white-space: pre-wrap;
+            width: 100%;
+            height: 100vh;
+            overflow-y: auto;
+            margin-left: 30px;
+        }
+
+        #tree-container {
+            font-size: 20px;
+            width: 500px;
+            height: 100vh;
+            overflow-y: auto;
+            border: 1px solid #000;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+
+        .unselectable {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+
+        #resize-handle {
+            background-color: rgb(141, 141, 141);
+            left: 5px;
+            top: 0;
+            width: 10px;
+            height: 100vh;
+            cursor: ew-resize;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="tree-container" class="unselectable">
+        </div>
+        <div id="resize-handle"></div>
+        <div id="content"></div>
+    </div>
+    <script>
+        function buildTree(data, parentElement, parentPath = '') {
+            const ul = document.createElement('ul');
+
+            data.forEach(item => {
+                const li = document.createElement('li');
+                const currentPath = parentPath ? `${parentPath}/${item.name}` : item.name;
+                li.innerHTML = `<input type="checkbox" class="tree-checkbox" data-path="${currentPath}"/> ${item.name}`;
+
+                if (item.type === 'folder') {
+                    buildTree(item.children, li, currentPath);
+                }
+
+                ul.appendChild(li);
+            });
+
+            parentElement.appendChild(ul);
+        }
+
+        function updateSelectionStatus(checkbox, isSelected) {
+            const li = checkbox.closest('li');
+
+            const childCheckboxes = li.querySelectorAll('input[type="checkbox"]');
+            childCheckboxes.forEach(childCheckbox => {
+                childCheckbox.checked = isSelected;
+            });
+
+
+            if (isSelected) {
+                let parentUl = li.parentElement;
+                while (parentUl) {
+                    if (parentUl.tagName === 'UL') {
+                        const allSiblingsSelected = Array.from(parentUl.children).every(child => {
+                            return child.querySelector('input[type="checkbox"]').checked;
+                        });
+
+                        if (allSiblingsSelected) {
+                            const parentCheckbox = parentUl.closest('li')?.querySelector('input[type="checkbox"]');
+                            if (parentCheckbox) {
+                                parentCheckbox.checked = true;
+                                parentUl = parentCheckbox.closest('ul');
+                            } else {
+                                break;
+                            }
+                        } else {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        function getSelectedPaths() {
+            const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            let paths = Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.path);
+
+            const filteredPaths = paths.filter(path => {
+                if (path.split('/').pop().includes('.')) {
+                    return true;
+                } else {
+                    const regex = new RegExp(`^${path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`);
+                    const childPaths = paths.filter(p => regex.test(p));
+                    return childPaths.length === 0;
+                }
+            });
+
+            console.log(filteredPaths);
+            return filteredPaths;
+        }
+
+        document.addEventListener('change', (e) => {
+            if (e.target.type === 'checkbox') {
+                const pathsSelected = getSelectedPaths();
+                fetch('http://localhost:5043/api/v1/terminal', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        paths: pathsSelected
+                    })
+                })
+                    .then(response => response.json())
+                    .catch(error => alert('Error, please try to unslect images, binaries... etc'))
+                    .then(data => {
+                        const content = document.getElementById('content');
+                        content.innerText = data.response;
+                    });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('http://localhost:5043/api/v1/structure')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    const jsonData = data;
+
+                    const treeContainer = document.getElementById('tree-container');
+                    buildTree(jsonData, treeContainer);
+
+                    treeContainer.addEventListener('change', (e) => {
+                        if (e.target.type === 'checkbox') {
+                            updateSelectionStatus(e.target, e.target.checked);
+                        }
+                    });
+                    
+                });
+        });
+
+        /* RESIZE */
+        const resizeHandle = document.getElementById('resize-handle');
+        const treeContainer = document.getElementById('tree-container');
+
+        let isResizing = false;
+        let startWidth;
+        let startX;
+
+        resizeHandle.addEventListener('mousedown', function (e) {
+            isResizing = true;
+
+            startX = e.clientX;
+
+            startWidth = treeContainer.getBoundingClientRect().width;
+
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', function (e) {
+            if (isResizing) {
+                const deltaX = e.clientX - startX;
+
+                const newWidth = startWidth + deltaX;
+
+                treeContainer.style.width = `${newWidth}px`;
+            }
+        });
+
+        document.addEventListener('mouseup', function () {
+            isResizing = false;
+        });
+        /* RESIZE */
+    </script>
+</body>
+
+</html>
