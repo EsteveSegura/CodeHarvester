@@ -1,6 +1,8 @@
 # CodeHarvester
 
-CodeHarvester efficiently aggregates code and text from files for streamlined AI analysis, simplifying data compilation and preparation.
+CodeHarvester efficiently aggregates code and text from files for streamlined AI analysis, simplifying data compilation for prompts.
+
+![Demo of the GUI](./assets/demo.gif)
 
 ## Clone the Repository
 
@@ -57,6 +59,18 @@ To compile CodeHarvester into a standalone binary for easy distribution, use PyI
 pyinstaller --onefile ./src/main.py
 # The binary will be located in the `dist` directory
 ```
+
+## Output example
+
+Running the command:
+
+```bash
+python3 src/main.py /home/root/code/tmp/is-emoji --extensions js yml --exclude-dirs .git
+```
+
+The output consists of all files present in the root folder "is-emoji", except for the .git folder and including all files with .js .yml extension.
+
+![Example of the output](./assets/example_output_dark.png)
 
 ## Running Tests
 
