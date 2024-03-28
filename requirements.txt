@@ -1,3 +1,4 @@
 cython
 pyinstaller
 flask
+flask-cors
