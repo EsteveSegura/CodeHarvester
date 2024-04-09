@@ -45,11 +45,16 @@ def find_files_without_extensions(directory, exclude_dirs, exclude_files):
                 matches.append(file_path)
     return matches
 
-def generate_markdown(files):
+# ToDo: Add a verbose option to print out the files that are skipped in main.py
+def generate_markdown(files, verbose=False):
     markdown_blocks = []
     for file in files:
         extension = file.split('.')[-1]
-        with open(file, 'r') as f:
-            content = f.read()
-            markdown_blocks.append(f'\nFilename: {file}\n```{extension}\n{content}\n```')
+        try:
+            with open(file, 'r', encoding='utf-8') as f:
+                content = f.read()
+                markdown_blocks.append(f'\nFilename: {file}\n```{extension}\n{content}\n```')
+        except UnicodeDecodeError as e:
+            if verbose:
+                print(f"Error when reading {file}: its a binary file. Skipping.")
     return '\n'.join(markdown_blocks)
