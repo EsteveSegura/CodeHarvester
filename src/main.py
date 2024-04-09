@@ -17,7 +17,7 @@ def main():
     parser.add_argument('--exclude-files', type=str, nargs='*', default=[], help='Files to exclude.')
     parser.add_argument('--include-files', type=str, nargs='*', default=[], help='Specific files to include.')
     parser.add_argument('--output', type=str, help='Output file path and name.', default='')
-    parser.add_argument('--gui', type=bool, default=False, help='Launch a server to display the output file.')
+    parser.add_argument('--gui', action='store_true', help='Launch a server to display the output file.')
 
     args = parser.parse_args()
 
