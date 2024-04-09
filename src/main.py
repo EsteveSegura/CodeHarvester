@@ -12,7 +12,7 @@ import gui.server as server
 def main():
     parser = argparse.ArgumentParser(description='Generate Markdown code blocks from code files in a directory structure.')
     parser.add_argument('directory', type=str, help='Root directory to start traversal.')
-    parser.add_argument('--extensions', type=str, nargs='+', help='File extensions to include.', required=True)
+    parser.add_argument('--extensions', type=str, nargs='+', help='File extensions to include.', required=False)
     parser.add_argument('--exclude-dirs', type=str, nargs='*', default=[], help='Directories to exclude.')
     parser.add_argument('--exclude-files', type=str, nargs='*', default=[], help='Files to exclude.')
     parser.add_argument('--include-files', type=str, nargs='*', default=[], help='Specific files to include.')
@@ -32,7 +32,10 @@ def main():
     else:
         exclude_dirs = [os.path.relpath(os.path.join(args.directory, e), args.directory) for e in args.exclude_dirs]
         exclude_files = [os.path.relpath(os.path.join(args.directory, e), args.directory) for e in args.exclude_files]
-        files = fo.find_files(args.directory, args.extensions, exclude_dirs, exclude_files) if args.extensions else []
+        if args.extensions:
+            files = fo.find_files(args.directory, args.extensions, exclude_dirs, exclude_files)
+        else:
+            files = fo.find_files_without_extensions(args.directory, exclude_dirs, exclude_files)
         tree_text = tg.print_tree(args.directory, exclude_dirs=exclude_dirs, exclude_files=exclude_files)
         structure_file_json = tg.build_tree_structure(args.directory, exclude_dirs, exclude_files)
         if args.gui:

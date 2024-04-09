@@ -35,6 +35,16 @@ def find_files(directory, extensions, exclude_dirs, exclude_files):
                 matches.append(file_path)
     return matches
 
+def find_files_without_extensions(directory, exclude_dirs, exclude_files):
+    matches = []
+    for root, dirnames, filenames in os.walk(directory, topdown=True):
+        dirnames[:] = [d for d in dirnames if not is_excluded(os.path.join(root, d), directory, exclude_dirs, exclude_files)]
+        for filename in filenames:
+            file_path = os.path.join(root, filename)
+            if not is_excluded(file_path, directory, exclude_dirs, exclude_files):
+                matches.append(file_path)
+    return matches
+
 def generate_markdown(files):
     markdown_blocks = []
     for file in files:
