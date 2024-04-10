@@ -241,6 +241,9 @@
             user-select: none;
         }
 
+        .hidden {
+            display: none;
+        }
 
         #resize-handle {
             background-color: rgb(141, 141, 141);
@@ -258,19 +261,73 @@
         <div id="tree-container" class="unselectable">
         </div>
         <div id="resize-handle"></div>
-        <div id="content"></div>
+        <div id="content">
+        </div>
+        <button id="view-highlighted">Ver con Resaltado</button>
+        <button id="view-plain">Ver en Texto Plano</button>
     </div>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
     <script>
+        function updateContentAsHighlighted(markdownText) {
+            document.getElementById('content').innerHTML = formatMarkdown(markdownText);
+            hljs.highlightAll(); // Aplica el resaltado de sintaxis
+        }
+
+        function updateContentAsPlainText(markdownText) {
+            document.getElementById('content').textContent = markdownText; // Usa textContent para texto plano
+        }
+
+        let lastReceivedContent = ''; // Almacena el último contenido recibido
+
+        document.getElementById('view-highlighted').addEventListener('click', () => {
+            updateContentAsHighlighted(lastReceivedContent);
+        });
+
+        document.getElementById('view-plain').addEventListener('click', () => {
+            updateContentAsPlainText(lastReceivedContent);
+        });
+
+        function formatMarkdown(markdownText) {
+            // Escapa caracteres HTML para evitar inyecciones
+            const escapeHTML = str => str.replace(/[&<>'"]/g,
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+
+            // Reemplaza los bloques de código con formato HTML adecuado para highlight.js
+            return markdownText
+                .replace(/```(\w+)\n([\s\S]*?)```/g, (match, lang, code) => {
+                    const escapedCode = escapeHTML(code);
+                    return `<pre><code class="${lang}">${escapedCode}</code></pre>`;
+                })
+                // Añade cualquier otro formateo de Markdown necesario aquí
+                .replace(/^Filename: (.+)$/gm, '<b>$1</b>'); // Ejemplo para dar formato a las líneas de "Filename:"
+        }
+
         function buildTree(data, parentElement, parentPath = '') {
             const ul = document.createElement('ul');
 
             data.forEach(item => {
                 const li = document.createElement('li');
+                const span = document.createElement('span');
+                span.textContent = item.name;
                 const currentPath = parentPath ? `${parentPath}/${item.name}` : item.name;
-                li.innerHTML = `<input type="checkbox" class="tree-checkbox" data-path="${currentPath}"/> ${item.name}`;
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'tree-checkbox';
+                checkbox.dataset.path = currentPath;
+
+                li.appendChild(checkbox);
+                li.appendChild(span);
 
                 if (item.type === 'folder') {
-                    buildTree(item.children, li, currentPath);
+                    span.classList.add('folder-name');
+                    span.addEventListener('click', function () {
+                        this.nextElementSibling.classList.toggle('hidden');
+                    });
+                    const childUl = document.createElement('ul');
+                    childUl.classList.add('folder-contents');
+                    buildTree(item.children, childUl, currentPath);
+                    li.appendChild(childUl);
                 }
 
                 ul.appendChild(li);
@@ -346,10 +403,10 @@
                     })
                 })
                     .then(response => response.json())
-                    .catch(error => alert('Error, please try to unslect images, binaries... etc'))
+                    .catch(error => alert('Error, please try to unselect images, binaries... etc'))
                     .then(data => {
-                        const content = document.getElementById('content');
-                        content.innerText = data.response;
+                        lastReceivedContent = data.response; // Almacena el contenido para uso futuro
+                        updateContentAsHighlighted(lastReceivedContent); // Actualiza el contenido inicialmente como resaltado
                     });
             }
         });
@@ -369,7 +426,7 @@
                             updateSelectionStatus(e.target, e.target.checked);
                         }
                     });
-                    
+
                 });
         });
 
