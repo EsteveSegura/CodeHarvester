@@ -45,4 +45,5 @@ def launch_server(structure_file_json, directory):
         
         return json.dumps({'response': output_content})
     
-    app.run(port=5043)
+    if __name__ == "__main__":
+        app.run(host='127.0.0.1', port=4111, debug=False, show_server_banner=False)
