@@ -3,6 +3,7 @@ import fnmatch
 import argparse
 import json
 import time
+import webbrowser
 
 import file_manipulation.file_operations as fo
 import file_manipulation.tree_generator as tg
@@ -40,6 +41,7 @@ def main():
         structure_file_json = tg.build_tree_structure(args.directory, exclude_dirs, exclude_files)
         if args.gui:
             server.launch_server(structure_file_json, args.directory)
+            webbrowser.open('http://localhost:8000')
 
     markdown = fo.generate_markdown(files)
     output_content = markdown + '\n\n' + tree_text
