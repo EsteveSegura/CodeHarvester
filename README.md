@@ -39,14 +39,14 @@ python3 src/main.py <ROOT_DIRECTORY> --extensions <FILE_EXTENSIONS> --exclude-di
 - `--exclude-files`: Specify individual files to be omitted from the aggregation.
 - `--include-files`: Specify individual files to be aggregated (cannot be used with --exclude-dirs, --exclude-files).
 - `--output`: Specify output file path and name. If not specified, the output will be printed to the console.
-- `--gui`: Launch a server to display the output in a web interface. Use `True` to enable this mode.
+- `--gui`: Launch a server to display the output in a web interface.
 
 ### Running in GUI Mode
 
-To run CodeHarvester in GUI mode, add the `--gui True` flag to the command:
+To run CodeHarvester in GUI mode, add the `--gui` flag to the command:
 
 ```bash
-python3 src/main.py <ROOT_DIRECTORY> --gui True
+python3 src/main.py <ROOT_DIRECTORY> --gui
 ```
 
 Navigate to `http://localhost:5043` in your web browser to interact with the application.
