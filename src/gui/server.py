@@ -1,4 +1,5 @@
 import os
+from utils.output_supressor import DisablePrint 
 
 from flask import Flask, Response, request, json
 from flask_cors import CORS, cross_origin
@@ -8,7 +9,7 @@ import file_manipulation.tree_generator as tg
 
 store = {}
 
-def launch_server(structure_file_json, directory):
+def launch_server(structure_file_json, directory, port):
     app = Flask(__name__)
     cors = CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
@@ -45,5 +46,5 @@ def launch_server(structure_file_json, directory):
         
         return json.dumps({'response': output_content})
     
-    if __name__ == "__main__":
-        app.run(host='127.0.0.1', port=4111, debug=False, show_server_banner=False)
+    with DisablePrint():
+        app.run(port=port, debug=False)
