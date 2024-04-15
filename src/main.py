@@ -44,6 +44,7 @@ def main():
         structure_file_json = tg.build_tree_structure(args.directory, exclude_dirs, exclude_files)
         if args.gui:
             open_url_in_browser('http://localhost:5043')
+            print(f"Server running at http://localhost:5043")
             server.launch_server(structure_file_json, args.directory, 5043)
 
     markdown = fo.generate_markdown(files)
