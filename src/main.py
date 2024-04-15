@@ -8,6 +8,9 @@ import webbrowser
 import file_manipulation.file_operations as fo
 import file_manipulation.tree_generator as tg
 
+from utils.open_browser import open_url_in_browser 
+from utils.output_supressor import DisablePrint 
+
 import gui.server as server
 
 def main():
@@ -40,8 +43,8 @@ def main():
         tree_text = tg.print_tree(args.directory, exclude_dirs=exclude_dirs, exclude_files=exclude_files)
         structure_file_json = tg.build_tree_structure(args.directory, exclude_dirs, exclude_files)
         if args.gui:
-            server.launch_server(structure_file_json, args.directory)
-            webbrowser.open('http://localhost:8000')
+            open_url_in_browser('http://localhost:5043')
+            server.launch_server(structure_file_json, args.directory, 5043)
 
     markdown = fo.generate_markdown(files)
     output_content = markdown + '\n\n' + tree_text
