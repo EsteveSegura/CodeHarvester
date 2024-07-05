@@ -1,16 +1,27 @@
 import os
-from utils.output_supressor import DisablePrint 
-
+import sys
+from utils.output_supressor import DisablePrint
 from flask import Flask, Response, request, json
 from flask_cors import CORS, cross_origin
-
 import file_manipulation.file_operations as fo
 import file_manipulation.tree_generator as tg
 
 store = {}
 
+def get_static_folder_path():
+    if hasattr(sys, '_MEIPASS'):
+        # PyInstaller env
+        base_dir = sys._MEIPASS
+        static_folder_path = os.path.join(base_dir, 'static')
+    else:
+        # Python3 env
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        static_folder_path = os.path.join(base_dir, '..', '..', 'static')
+    return static_folder_path
+
 def launch_server(structure_file_json, directory, port):
-    app = Flask(__name__)
+    static_folder_path = get_static_folder_path()
+    app = Flask(__name__, static_folder=static_folder_path)
     cors = CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -20,7 +31,8 @@ def launch_server(structure_file_json, directory, port):
     @app.route('/')
     @cross_origin()
     def home():
-        with open('./static/index.html', 'r') as html_file:
+        index_html_path = os.path.join(static_folder_path, 'index.html')
+        with open(index_html_path, 'r') as html_file:
             html_content = html_file.read()
 
         return Response(html_content, mimetype='text/html')
