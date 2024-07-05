@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
@@ -17,8 +17,22 @@ jobs:
           python-version: '3.10'
       - name: Install Dependencies
         run: pip install -r requirements.txt
-      - name: Build with PyInstaller
-        run: pyinstaller --onefile ./src/main.py
+      
+      # Steps specific to Linux
+      - name: Build with PyInstaller on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: pyinstaller main.spec
+          
+      # Steps specific to Windows
+      - name: Build with PyInstaller on Windows
+        if: matrix.os == 'windows-latest'
+        run: pyinstaller main.spec
+          
+      # Steps specific to macOS
+      - name: Build with PyInstaller on macOS
+        if: matrix.os == 'macos-latest'
+        run: pyinstaller main.spec
+          
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
