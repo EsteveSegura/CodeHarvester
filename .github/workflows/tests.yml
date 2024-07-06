@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -22,4 +21,5 @@ jobs:
 
     - name: Run tests
       run: |
-        python ./test/e2e.py
+        chmod +x ./run_tests.sh
+        ./run_tests.sh
