@@ -1,4 +1,5 @@
 import os
+import fnmatch
 
 def is_excluded(path, directory, exclude_dirs, exclude_files):
     rel_path = os.path.relpath(path, directory)
