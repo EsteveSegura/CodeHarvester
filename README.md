@@ -1,250 +1,148 @@
 # CodeHarvester
 
-CodeHarvester efficiently aggregates code and text from files for streamlined AI analysis, simplifying data compilation for prompts.
+CodeHarvester is a command-line utility designed to collect and document source code from a project. It allows developers to easily generate an overview of their project structure and the content of selected files.
 
-![Demo of the GUI](./assets/demo.gif)
+## Parameters
 
-## Clone the Repository
+### Parameter Descriptions
 
-To begin, clone the repository to your local machine:
+- `-h, --help`: Display the help message with all available options.
+- `-d, --directory <path>`: Specify the root directory to start the file search (required).
+- `-e, --extensions <ext1> <ext2> ...`: Specify a list of file extensions to include.
+- `-E, --exclude-extensions <ext1> <ext2> ...`: Specify file extensions to exclude.
+- `-x, --exclude-dirs <dir1> <dir2> ...`: List of directories to exclude from the search.
+- `-f, --exclude-files <file1> <file2> ...`: List of specific files to exclude.
+- `--list-files <file1> <file2> ...`: List of specific files to process (relative to the root directory).
+- `-o, --output <file>`: Path and name of the output file where the result will be saved (default: output.md).
+- `--unlimited`: Process files of any size (by default, limited to 10MB).
+- `--allow-binary-files`: Allow binary files to be processed and included in the output.
+- `--diff`: If this option is specified, the Git diff of each file with changes will be included in the output. (Requires Git installed)
 
-```bash
-git clone https://github.com/EsteveSegura/CodeHarvester.git
-cd CodeHarvester
+## Modes of Operation
+
+### Normal Mode
+
+In Normal Mode, CodeHarvester processes directories and subdirectories starting from the specified root directory. You can specify file extensions to include or exclude, as well as directories and files to exclude. This mode generates a Markdown document with the project structure and content of the found files.
+
+#### Available options in Normal Mode:
+
+- `-d, --directory <path>`: Specify the root directory to start the file search (required).
+- `-e, --extensions <ext1> <ext2> ...`: Specify a list of file extensions to include.
+- `-E, --exclude-extensions <ext1> <ext2> ...`: Specify file extensions to exclude.
+- `-x, --exclude-dirs <dir1> <dir2> ...`: List of directories to exclude from the search.
+- `-f, --exclude-files <file1> <file2> ...`: List of specific files to exclude.
+- `-o, --output <file>`: Path and name of the output file where the result will be saved (default: output.md).
+- `--unlimited`: Process files of any size (by default, limited to 10MB).
+- `--allow-binary-files`: Allow binary files to be processed and included in the output.
+- `--diff`: Include the Git diff of each file if changes are present.
+
+### List Files Mode
+
+In List Files Mode, CodeHarvester processes a specified list of files relative to the root directory. This mode is useful when you only want to document specific files instead of traversing entire directories.
+
+#### Available options in List Files Mode:
+
+- `-d, --directory <path>`: Specify the root directory to start the file search (required).
+- `--list-files <file1> <file2> ...`: List of specific files to process (relative to the root directory).
+- `-o, --output <file>`: Path and name of the output file where the result will be saved (default: output.md).
+- `--unlimited`: Process files of any size (by default, limited to 10MB).
+- `--allow-binary-files`: Allow binary files to be processed and included in the output.
+- `--diff`: Include the Git diff of each file if changes are present.
+
+## Output
+
+CodeHarvester generates a Markdown file containing the structure and content of the specified files and directories. The output includes the following sections:
+
+1. **Project Structure**: A tree representation of the project's directory structure.
+2. **File Contents**: The content of the found files, formatted in code blocks.
+3. **Git Diff (if `--diff` is used)**: The Git diff of each file with changes, formatted in diff code blocks.
+
+### Example
+
+Assuming you have the following directory structure:
+
+```
+/project
+├── src
+│   ├── main.cpp
+│   └── util.cpp
+├── include
+│   └── util.h
+└── CMakeLists.txt
 ```
 
-## Installation
+And you run the following command:
 
-Install the necessary dependencies to ensure CodeHarvester runs smoothly:
-
-```bash
-pip install -r requirements.txt
 ```
+./CodeHarvester -d /path/to/project -o output.md --extensions .cpp .h --diff
+```
+
+The generated `output.md` might look like this: [OUTPUT_EXAMPLE.md](OUTPUT_EXAMPLE.md)
+
+In this example, the output file `output.md` includes the project structure, the content of `main.cpp`, `util.cpp`, and `util.h`, and the Git diff for `main.cpp` showing the changes made.
 
 ## Usage
 
-### Basic Command Line Usage
+The basic syntax for using CodeHarvester is:
 
-To use CodeHarvester from the command line, navigate to the CodeHarvester directory and execute the following command:
-
-```bash
-python3 src/main.py <ROOT_DIRECTORY> --extensions <FILE_EXTENSIONS> --exclude-dirs <DIRECTORIES_TO_EXCLUDE> --exclude-files <FILES_TO_EXCLUDE>
+```shell
+./CodeHarvester [options]
 ```
 
-### Parameters
-
-- `<ROOT_DIRECTORY>`: The starting point for the directory traversal.
-- `--extensions`: Specify file extensions to include in the aggregation (e.g., py, js, txt).
-- `--exclude-dirs`: List directories you wish to exclude from the traversal.
-- `--exclude-files`: Specify individual files to be omitted from the aggregation.
-- `--include-files`: Specify individual files to be aggregated (cannot be used with --exclude-dirs, --exclude-files).
-- `--output`: Specify output file path and name. If not specified, the output will be printed to the console.
-- `--gui`: Launch a server to display the output in a web interface.
-
-### Running in GUI Mode
-
-To run CodeHarvester in GUI mode, add the `--gui` flag to the command:
-
-```bash
-python3 src/main.py <ROOT_DIRECTORY> --gui
-```
-
-Navigate to `http://localhost:5043` in your web browser to interact with the application.
-
-## Building the Binary
-
-To compile CodeHarvester into a standalone binary for easy distribution, use PyInstaller:
-
-```bash
-pyinstaller main.spec
-# The binary will be located in the `dist` directory
-```
-
-### Installation Guide
-
-#### Windows
-
-1. **Compile the binary:**
-
-    ```bash
-    pyinstaller main.spec
-    ```
-
-2. **Create a directory to store the binary:**
-
-    Navigate to the `dist` directory and move the `main` directory to a desired location, for example:
-
-    ```cmd
-    mkdir "C:\Program Files\CodeHarvester"
-    move dist\main "C:\Program Files\CodeHarvester"
-    ```
-
-3. **Add the directory to your PATH:**
-
-    - Open the Start Search, type in "env", and select "Edit the system environment variables".
-    - In the System Properties window, click on the "Environment Variables" button.
-    - In the Environment Variables window, find the "Path" variable in the "System variables" section and select it. Click on the "Edit" button.
-    - In the Edit Environment Variable window, click on "New" and add the path to the directory where you moved `main.exe`. For example, `C:\Program Files\CodeHarvester`.
-    - Click "OK" to close all the windows.
-
-Now, you can run `codeharvester` from any path in the terminal by simply typing:
-
-```cmd
-codeharvester
-```
-
-#### Linux
-
-1. **Compile the binary:**
-
-    ```bash
-    pyinstaller main.spec
-    ```
-
-2. **Create a directory to store the binary:**
-
-    ```bash
-    sudo mkdir -p /usr/local/codeharvester
-    sudo cp -r ./dist/main/* /usr/local/codeharvester/
-    ```
-
-3. **Create a script to run the binary:**
-
-    ```bash
-    sudo tee /usr/local/bin/codeharvester <<'EOF'
-    #!/bin/bash
-    /usr/local/codeharvester/main "$@"
-    EOF
-    ```
-
-4. **Give execution permissions to the script:**
-
-    ```bash
-    sudo chmod +x /usr/local/bin/codeharvester
-    ```
-
-Now, you can run `codeharvester` from any path in the terminal by simply typing:
-
-```bash
-codeharvester
-```
-
-#### macOS
-
-1. **Compile the binary:**
-
-    ```bash
-    pyinstaller main.spec
-    ```
-
-2. **Create a directory to store the binary:**
-
-    ```bash
-    sudo mkdir -p /usr/local/codeharvester
-    sudo cp -r ./dist/main/* /usr/local/codeharvester/
-    ```
-
-3. **Create a script to run the binary:**
-
-    ```bash
-    sudo tee /usr/local/bin/codeharvester <<'EOF'
-    #!/bin/bash
-    /usr/local/codeharvester/main "$@"
-    EOF
-    ```
-
-4. **Give execution permissions to the script:**
-
-    ```bash
-    sudo chmod +x /usr/local/bin/codeharvester
-    ```
-
-Now, you can run `codeharvester` from any path in the terminal by simply typing:
-
-```bash
-codeharvester
-```
-
-### Uninstallation Guide
-
-#### Windows (Uninstallation)
-
-1. **Remove the directory from your PATH:**
-
-    - Open the Start Search, type in "env", and select "Edit the system environment variables".
-    - In the System Properties window, click on the "Environment Variables" button.
-    - In the Environment Variables window, find the "Path" variable in the "System variables" section and select it. Click on the "Edit" button.
-    - In the Edit Environment Variable window, select the path to the directory where you moved `main.exe` (e.g., `C:\Program Files\CodeHarvester`) and click on "Delete".
-    - Click "OK" to close all the windows.
-
-2. **Delete the directory containing `main.exe`:**
-
-    ```cmd
-    rmdir /S /Q "C:\Program Files\CodeHarvester"
-    ```
-
-#### Linux (Uninstallation)
-
-1. **Remove the binary:**
-
-    ```bash
-    sudo rm /usr/local/bin/codeharvester
-    ```
-
-2. **Delete the directory containing the binary:**
-
-    ```bash
-    sudo rm -r /usr/local/codeharvester
-    ```
-
-#### macOS (Uninstallation)
-
-1. **Remove the binary:**
-
-    ```bash
-    sudo rm /usr/local/bin/codeharvester
-    ```
-
-2. **Delete the directory containing the binary:**
-
-    ```bash
-    sudo rm -r /usr/local/codeharvester
-    ```
-
-This guide provides detailed steps for compiling, installing, and uninstalling `codeharvester` on Windows, Linux, and macOS. By following these steps, you can ensure that the software is correctly set up and can be easily removed if necessary.
-
-## Output example
-
-Running the command:
-
-```bash
-python3 src/main.py /home/root/code/tmp/is-emoji --extensions js yml --exclude-dirs .git
-```
-
-The output consists of all files present in the root folder "is-emoji", except for the .git folder and including all files with .js .yml extension.
-
-![Example of the output](./assets/example_output_dark.png)
-
-## Running Tests
-
-To run the end-to-end tests, use:
-
-```bash
-python3 test/e2e.py
-```
-
-## Alternatives
-
-For quick tasks, you might use terminal commands like `find` and `tree`:
-
-Aggregate files:
-
-```bash
-find /path/to/directory -name '*.py' -print0 | xargs -0 cat > combined_files.txt
-```
-
-Generate a directory tree:
-
-```bash
-tree /path/to/directory
-```
+### Usage examples
+
+1. Process all files in a directory:
+   ```shell
+   ./CodeHarvester -d /path/to/your/project -o output.md
+   ```
+
+2. Include only files with specific extensions (.cpp & .h):
+   ```shell
+   ./CodeHarvester -d /path/to/your/project -e .cpp .h -o output.md
+   ```
+
+3. Exclude certain directories and files:
+   ```shell
+   ./CodeHarvester -d /path/to/your/project -x build .git -f .env -o output.md
+   ```
+
+4. Process only specific files:
+   ```shell
+   ./CodeHarvester -d /path/to/your/project --list-files src/main.cpp include/header.h -o output.md
+   ```
+
+5. Process files of any size and allow binary files:
+   ```shell
+   ./CodeHarvester -d /path/to/your/project --unlimited --allow-binary-files -o output.md
+   ```
+
+## Building the Project
+
+### Prerequisites
+
+- C++ compiler with C++17 support
+- CMake (version 3.10 or higher)
+- Boost library (program_options and filesystem components)
+
+### Build
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/EsteveSegura/CodeHarvester.git
+   cd CodeHarvester
+   ```
+
+2. Create a build directory and navigate to it:
+   ```bash
+   mkdir build && cd build
+   ```
+
+3. Run CMake and build the project:
+   ```bash
+   cmake ..
+   make
+   ```
+
+## License
+
+MIT
